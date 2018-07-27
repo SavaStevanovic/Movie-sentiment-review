@@ -18,7 +18,7 @@ testData = pd.read_csv(os.path.join(dirname,
 
 np.random.seed(5)
 
-sample_size=400
+sample_size=trainData.shape[0]
 permutation = list(np.random.permutation(trainData.shape[0]))[:sample_size]
 reviews = trainData.iloc[permutation, 0]
 grades = trainData.iloc[permutation, 1]

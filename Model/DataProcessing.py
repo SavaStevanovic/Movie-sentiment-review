@@ -1,6 +1,9 @@
 from tensorflow.keras.preprocessing.text import Tokenizer
 import sys
 import re
+import os
+import csv
+import operator
 
 class DataProcessing:
     stopwords = [ " a " ,  " about " ,  " above " ,  " after " ,  " again " ,  " against " ,  " all " ,  " am " ,  " an " ,  " and " ,  " any " ,  " are " ,  " as " ,  " at " ,  " be " ,  " because " ,  " been " ,  " before " ,  " being " ,  " below " ,  " between " ,  " both " ,  " but " ,  " by " ,  " could " ,  " did " ,  " do " ,  " does " ,  " doing " ,  " down " ,  " during " ,  " each " ,  " few " ,  " for " ,  " from " ,  " further " ,  " had " ,  " has " ,  " have " ,  " having " ,  " he " ,  " he'd " ,  " he'll " ,  " he's " ,  " her " ,  " here " ,  " here's " ,  " hers " ,  " herself " ,  " him " ,  " himself " ,  " his " ,  " how " ,  " how's " ,  " i " ,  " i'd " ,  " i'll " ,  " i'm " ,  " i've " ,  " if " ,  " in " ,  " into " ,  " is " ,  " it " ,  " it's " ,  " its " ,  " itself " ,  " let's " ,  " me " ,  " more " ,  " most " ,  " my " ,  " myself " ,  " nor " ,  " of " ,  " on " ,  " once " ,  " only " ,  " or " ,  " other " ,  " ought " ,
@@ -28,9 +31,9 @@ class DataProcessing:
         
         return(series)
 
-    def tokenize(self):
+    def tokenize(self, writeDictionaryToCsv):
         all_reviews = self.trainData.append(self.testData)
-        tokenizer = Tokenizer()
+        tokenizer = Tokenizer(num_words=10000)
         tokenizer.fit_on_texts(all_reviews)
         tokenizer.fit_on_sequences(all_reviews)
 
@@ -39,4 +42,15 @@ class DataProcessing:
 
         self.trainData = tokenizer.sequences_to_matrix(self.trainData)
         self.testData = tokenizer.sequences_to_matrix(self.testData)
-        # danse to sparse self.trainData, self.testData
+        if(writeDictionaryToCsv):
+            self.ExportFeatureSpace(tokenizer)
+
+    def ExportFeatureSpace(self, tokenizer):
+        print("Writing dictionary to csv")
+        dirname = os.path.dirname(__file__)
+        with open(dirname+'\\featurespace.csv', 'w', newline='' ) as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=['Word','Count'])
+            writer.writeheader()
+            for key, data in sorted(tokenizer.word_docs.items(), key=operator.itemgetter(1), reverse=True):
+                writer.writerow({'Word':key.encode('utf-8').strip(),'Count':str(data)})
+        print("Finished writing dictionary to csv")        
