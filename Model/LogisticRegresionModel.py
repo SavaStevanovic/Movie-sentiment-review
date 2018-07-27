@@ -83,7 +83,7 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 200, minibatch_size = 32, print_cost = True):
+          num_epochs = 10, minibatch_size = 32, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
@@ -138,19 +138,17 @@ class LogisticRegresionModel:
             parameters = sess.run(parameters)
             print("Parameters have been trained!")
 
-            print(Z3)
-            print(Y)
-
-            # Calculate the correct predictions
-            correct_prediction = tf.equal(Z3, Y)
-
-            print(correct_prediction)
-
             # Calculate accuracy on the test set
-            accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+            print(Y.get_shape())
+            print(Z3.get_shape())
+            
+            predicted = tf.nn.sigmoid(Z3)
+
+            accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.round(predicted), Y), tf.float32))
 
             print("Train Accuracy:", accuracy.eval({X: np.transpose(self.X_train), Y: np.matrix([self.y_train])}))
             print("Test Accuracy:", accuracy.eval({X: np.transpose(self.X_test), Y: np.matrix([self.y_test])}))
+
             
             return parameters
 
