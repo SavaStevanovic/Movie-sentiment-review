@@ -76,14 +76,14 @@ class LogisticRegresionModel:
         labels = tf.transpose(Y)
 
         # START CODE HERE ### (1 line of code)
-        cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+        cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
             logits=logits, labels=labels))
         ### END CODE HERE ###
 
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 1500, minibatch_size = 32, print_cost = True):
+          num_epochs = 200, minibatch_size = 32, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
@@ -144,8 +144,8 @@ class LogisticRegresionModel:
             # Calculate accuracy on the test set
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-            print("Train Accuracy:", accuracy.eval({X: self.X_train, Y: self.y_train}))
-            print("Test Accuracy:", accuracy.eval({X: self.X_test, Y: self.y_test}))
+            print("Train Accuracy:", accuracy.eval({X: np.transpose(self.X_train), Y: np.transpose(self.y_train)}))
+            print("Test Accuracy:", accuracy.eval({X: np.transpose(self.X_test), Y: np.transpose(self.y_test)}))
             
             return parameters
 

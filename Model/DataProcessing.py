@@ -39,3 +39,4 @@ class DataProcessing:
 
         self.trainData = tokenizer.sequences_to_matrix(self.trainData)
         self.testData = tokenizer.sequences_to_matrix(self.testData)
+        # danse to sparse

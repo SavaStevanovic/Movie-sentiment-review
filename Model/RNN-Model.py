@@ -14,7 +14,9 @@ trainData = pd.read_csv(
 testData = pd.read_csv(
     'C:/Users/Sava/Documents/Movie-sentiment-review/Data Parsing/TestLabeledData.csv')
 
-sample_size=5
+np.random.seed(5)
+
+sample_size=400
 permutation = list(np.random.permutation(trainData.shape[0]))[:sample_size]
 reviews = trainData.iloc[permutation, 0]
 grades = trainData.iloc[permutation, 1]
