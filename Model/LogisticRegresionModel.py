@@ -138,14 +138,19 @@ class LogisticRegresionModel:
             parameters = sess.run(parameters)
             print("Parameters have been trained!")
 
+            print(Z3)
+            print(Y)
+
             # Calculate the correct predictions
-            correct_prediction = tf.equal(tf.argmax(Z3), tf.argmax(Y))
+            correct_prediction = tf.equal(Z3, Y)
+
+            print(correct_prediction)
 
             # Calculate accuracy on the test set
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 
-            print("Train Accuracy:", accuracy.eval({X: np.transpose(self.X_train), Y: np.transpose(self.y_train)}))
-            print("Test Accuracy:", accuracy.eval({X: np.transpose(self.X_test), Y: np.transpose(self.y_test)}))
+            print("Train Accuracy:", accuracy.eval({X: np.transpose(self.X_train), Y: np.matrix([self.y_train])}))
+            print("Test Accuracy:", accuracy.eval({X: np.transpose(self.X_test), Y: np.matrix([self.y_test])}))
             
             return parameters
 

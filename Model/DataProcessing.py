@@ -29,7 +29,7 @@ class DataProcessing:
         return(series)
 
     def tokenize(self):
-        all_reviews = self.trainData + self.testData
+        all_reviews = self.trainData.append(self.testData)
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(all_reviews)
         tokenizer.fit_on_sequences(all_reviews)
