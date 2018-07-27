@@ -14,12 +14,13 @@ trainData = pd.read_csv(
 testData = pd.read_csv(
     'C:/Users/Sava/Documents/Movie-sentiment-review/Data Parsing/TestLabeledData.csv')
 
-sample_size=1000
-reviews = trainData.iloc[:sample_size, 0]
-grades = trainData.iloc[:sample_size, 1]
+sample_size=5
+permutation = list(np.random.permutation(trainData.shape[0]))[:sample_size]
+reviews = trainData.iloc[permutation, 0]
+grades = trainData.iloc[permutation, 1]
 
-testReviews = testData.iloc[:sample_size, 0]
-testGrades = testData.iloc[:sample_size, 1]
+testReviews = testData.iloc[permutation, 0]
+testGrades = testData.iloc[permutation, 1]
 
 dataProcessing = DataProcessing(reviews, testReviews, grades, testGrades, True)
 dataProcessing.cleanData()
