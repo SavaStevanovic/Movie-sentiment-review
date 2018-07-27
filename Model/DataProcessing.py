@@ -21,10 +21,7 @@ class DataProcessing:
         self.testData = self.clean_text(self.testData, self.remove_stopwords)
 
     def clean_text(self, series, remove_stopwords=True):
-        series=series.str.lower()
         series=series.str.replace(r"<br />", ' ')
-        series=series.str.replace(r"[^a-z]", ' ')
-        series=series.str.replace(r"\s+", ' ')
 
         for stopword in self.stopwords:
             series=series.str.replace(stopword, ' ')
@@ -35,6 +32,10 @@ class DataProcessing:
         all_reviews = self.trainData + self.testData
         tokenizer = Tokenizer()
         tokenizer.fit_on_texts(all_reviews)
+        tokenizer.fit_on_sequences(all_reviews)
 
         self.trainData = tokenizer.texts_to_sequences(self.trainData)
         self.testData = tokenizer.texts_to_sequences(self.testData)
+
+        self.trainData = tokenizer.sequences_to_matrix(self.trainData)
+        self.testData = tokenizer.sequences_to_matrix(self.testData)
