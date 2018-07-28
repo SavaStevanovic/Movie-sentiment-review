@@ -35,6 +35,10 @@ class DataProcessing:
 
     def tokenize(self, writeDictionaryToCsv=False):
         print('Tokenizing')
+        print('adding n-grams')
+        self.trainData=self.addNgGrams(self.trainData)
+        self.testData=self.addNgGrams(self.testData)
+
         all_reviews = self.trainData.append(self.testData)
         tokenizer = Tokenizer(num_words=4000)
         print('fitting')
@@ -63,3 +67,20 @@ class DataProcessing:
             for key, data in sorted(tokenizer.word_docs.items(), key=operator.itemgetter(1), reverse=True):
                 writer.writerow({'Word':key.encode('utf-8').strip(),'Count':str(data)})
         print("Finished writing dictionary to csv")        
+
+    def find_trigrams(self,input_list):
+        return  [input_list[i]+"zzz" +input_list[i+1]+"zzz"+input_list[i+2] for i in range(len(input_list)-2)]  
+
+    def find_bigrams(self,input_list):
+        return [input_list[i]+"zzz" +input_list[i+1] for i in range(len(input_list)-1)]
+
+    def addNgGrams(self, data):
+        return data.apply(lambda x: self.addNGramsToSentance(x))
+
+    def addNGramsToSentance(self, sentance):
+        words = sentance.split(' ')
+        bigrams=self.find_bigrams(words)
+        trigrams=self.find_trigrams(words)
+        extendedWords=words+bigrams+trigrams
+        return ' '.join(extendedWords)
+    

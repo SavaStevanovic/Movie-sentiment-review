@@ -79,7 +79,7 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 9, minibatch_size = 1024, print_cost = True):
+          num_epochs = 10, minibatch_size = 1024, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
@@ -94,7 +94,11 @@ class LogisticRegresionModel:
         cost = self.compute_cost(Z3, Y)
         optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
         init = tf.global_variables_initializer()
-        with tf.Session() as sess:
+        
+        config = tf.ConfigProto(
+                device_count = {'GPU': 0}
+            )
+        with tf.Session(config=config) as sess:
             # Run the initialization
             sess.run(init)
             # prediction accuracy
