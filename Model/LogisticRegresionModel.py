@@ -25,16 +25,12 @@ class LogisticRegresionModel:
         tf.set_random_seed(1)
 
         # START CODE HERE ### (approx. 6 lines of code)
-        W1 = tf.get_variable(
-            "W1", [25, width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b1 = tf.get_variable("b1", [25, 1], initializer=tf.zeros_initializer())
-        W2 = tf.get_variable(
-            "W2", [12, 25], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b2 = tf.get_variable("b2", [12, 1], initializer=tf.zeros_initializer())
-        W3 = tf.get_variable(
-            "W3", [output, 12], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b3 = tf.get_variable(
-            "b3", [output, 1], initializer=tf.zeros_initializer())
+        W1 = tf.get_variable("W1", [100, width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+        b1 = tf.get_variable("b1", [100, 1], initializer=tf.zeros_initializer())
+        W2 = tf.get_variable("W2", [100, 100], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+        b2 = tf.get_variable("b2", [100, 1], initializer=tf.zeros_initializer())
+        W3 = tf.get_variable("W3", [output, 100], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+        b3 = tf.get_variable("b3", [output, 1], initializer=tf.zeros_initializer())
         ### END CODE HERE ###
 
         parameters = {"W1": W1,
@@ -83,7 +79,7 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 25, minibatch_size = 1024, print_cost = True):
+          num_epochs = 9, minibatch_size = 1024, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
@@ -127,15 +123,16 @@ class LogisticRegresionModel:
                     epoch_cost += minibatch_cost / num_minibatches
 
                 # Print the cost every epoch
-                if print_cost == True and epoch % 10 == 0:
-                    print ("Cost after epoch %i: %f" % (epoch, epoch_cost))
                 if print_cost == True and epoch % 5 == 0:
+                    print ("Cost after epoch %i: %f" % (epoch, epoch_cost))
+                if print_cost == True and epoch % 1 == 0:
                     costs.append(epoch_cost)
                     train_acc.append(accuracy.eval({X: np.transpose(self.X_train), Y: np.matrix([self.y_train])}))
                     test_acc.append(accuracy.eval({X: np.transpose(self.X_test), Y: np.matrix([self.y_test])}))
                                     
             # plot the cost
             plt.gca().set_color_cycle(['blue', 'green', 'red'])
+            plt.xticks(np.arange(0, len(costs)+1, step=1.0))
             plt.plot(np.squeeze(costs))
             plt.plot(np.squeeze(train_acc))
             plt.plot(np.squeeze(test_acc))
