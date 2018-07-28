@@ -1,50 +1,42 @@
 import glob
 import sys
 import csv
+import os
 
-filePath = "C:/Users/Sava/Documents/Movie-sentiment-review/Unprocessed data/aclImdb/train/pos/*" #sys.argv[1]
+def MergeFeatureFiles(filePath,label, outFile):
+    files = glob.glob(filePath)   
+    for name in files:
+        try:
+            with open(name) as inFile: 
+                outFile.writerow([inFile.read(),name.split('_')[1].split('.')[0],label])
+        except:
+            print(name)
+
+dirname = os.path.dirname(__file__)
+dirname=os.path.abspath(os.path.join(dirname, os.pardir))
+filePath = os.path.join(dirname,"Unprocessed data/aclImdb/train/pos/*") #sys.argv[1]
 label = "1" #sys.argv[2]
-outFileName = "C:/Users/Sava/Documents/Movie-sentiment-review/Data Parsing/labeledData.csv" #sys.argv[3]
+outFileName = os.path.join(dirname,"Data Parsing/labeledData.csv") #sys.argv[3]
 
 outFile = csv.writer(open(outFileName, "w", newline=''))
-files = glob.glob(filePath)   
-for name in files:
-    try:
-        with open(name) as inFile: 
-            outFile.writerow([inFile.read(),label])
-    except:
-        print(name)
+
+MergeFeatureFiles(filePath,label,outFile)
 
 
-filePath = "C:/Users/Sava/Documents/Movie-sentiment-review/Unprocessed data/aclImdb/train/neg/*" #sys.argv[1]
+filePath = os.path.join(dirname,"Unprocessed data/aclImdb/train/neg/*") #sys.argv[1]
 label = "0" #sys.argv[2]
 
-files = glob.glob(filePath)   
-for name in files:
-    try:
-        with open(name) as inFile: 
-            outFile.writerow([inFile.read(),label])
-    except:
-        print(name)
+MergeFeatureFiles(filePath,label,outFile)
 
-# filePath = "C:/Users/Sava/Documents/Movie-sentiment-review/Unprocessed data/aclImdb/test/pos/*" #sys.argv[1]
-# label = "1" #sys.argv[2]
+outFileName = os.path.join(dirname,"Data Parsing/testLabeledData.csv")
+outFile = csv.writer(open(outFileName, "w", newline=''))
 
-# files = glob.glob(filePath)   
-# for name in files:
-#     try:
-#         with open(name) as inFile: 
-#             outFile.writerow([inFile.read(),label])
-#     except:
-#         print(name)
+filePath = filePath = os.path.join(dirname,"Unprocessed data/aclImdb/test/pos/*") #sys.argv[1]
+label = "1" #sys.argv[2]
 
-# filePath = "C:/Users/Sava/Documents/Movie-sentiment-review/Unprocessed data/aclImdb/test/neg/*" #sys.argv[1]
-# label = "0" #sys.argv[2]
+MergeFeatureFiles(filePath,label,outFile)
 
-# files = glob.glob(filePath)   
-# for name in files:
-#     try:
-#         with open(name) as inFile: 
-#             outFile.writerow([inFile.read(),label])
-#     except:
-#         print(name)
+filePath = filePath = os.path.join(dirname,"Unprocessed data/aclImdb/test/neg/*") #sys.argv[1]
+label = "0" #sys.argv[2]
+
+MergeFeatureFiles(filePath,label,outFile)
