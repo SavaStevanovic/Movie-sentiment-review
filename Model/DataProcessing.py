@@ -37,12 +37,14 @@ class DataProcessing:
         print('Tokenizing')
         all_reviews = self.trainData.append(self.testData)
         tokenizer = Tokenizer(num_words=4000)
+        print('fitting')
         tokenizer.fit_on_texts(all_reviews)
         tokenizer.fit_on_sequences(all_reviews)
 
+        print('texts_to_sequences')
         self.trainData = tokenizer.texts_to_sequences(self.trainData)
         self.testData = tokenizer.texts_to_sequences(self.testData)
-
+        print('sequences_to_matrix')
         self.trainData = tokenizer.sequences_to_matrix(self.trainData)
         self.testData = tokenizer.sequences_to_matrix(self.testData)
 

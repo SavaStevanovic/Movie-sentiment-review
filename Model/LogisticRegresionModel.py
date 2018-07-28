@@ -83,13 +83,15 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 80, minibatch_size = 1024, print_cost = True):
+          num_epochs = 25, minibatch_size = 1024, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
         (m, n_x) = self.X_train.shape                          # (n_x: input size, m : number of examples in the train set)
         n_y = self.y_train.shape[0]                            # n_y : output size
-        costs = []       
+        costs = []      
+        test_acc=[]
+        train_acc=[] 
         X, Y = self.create_placeholders(n_x, 1)
         parameters = self.initialize_parameters(n_x, 1)  
         Z3 = self.forward_propagation(X, parameters)
@@ -99,7 +101,10 @@ class LogisticRegresionModel:
         with tf.Session() as sess:
             # Run the initialization
             sess.run(init)
-            
+            # prediction accuracy
+            predicted = tf.nn.sigmoid(Z3)
+            accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.round(predicted), Y), tf.float32))
+
             # Do the training loop
             for epoch in range(num_epochs):
 
@@ -122,30 +127,25 @@ class LogisticRegresionModel:
                     epoch_cost += minibatch_cost / num_minibatches
 
                 # Print the cost every epoch
-                if print_cost == True and epoch % 100 == 0:
+                if print_cost == True and epoch % 10 == 0:
                     print ("Cost after epoch %i: %f" % (epoch, epoch_cost))
                 if print_cost == True and epoch % 5 == 0:
                     costs.append(epoch_cost)
-                    
+                    train_acc.append(accuracy.eval({X: np.transpose(self.X_train), Y: np.matrix([self.y_train])}))
+                    test_acc.append(accuracy.eval({X: np.transpose(self.X_test), Y: np.matrix([self.y_test])}))
+                                    
             # plot the cost
+            plt.gca().set_color_cycle(['blue', 'green', 'red'])
             plt.plot(np.squeeze(costs))
-            plt.ylabel('cost')
-            plt.xlabel('iterations (per tens)')
-            plt.title("Learning rate =" + str(learning_rate))
+            plt.plot(np.squeeze(train_acc))
+            plt.plot(np.squeeze(test_acc))
+            plt.legend(['Learning rate', 'train accuracy', 'test accuracy'], loc='upper left')
             plt.show()
 
             # lets save the parameters in a variable
             parameters = sess.run(parameters)
             print("Parameters have been trained!")
-
-            # Calculate accuracy on the test set
-            print(Y.get_shape())
-            print(Z3.get_shape())
             
-            predicted = tf.nn.sigmoid(Z3)
-
-            accuracy = tf.reduce_mean(tf.cast(tf.equal(tf.round(predicted), Y), tf.float32))
-
             print("Train Accuracy:", accuracy.eval({X: np.transpose(self.X_train), Y: np.matrix([self.y_train])}))
             print("Test Accuracy:", accuracy.eval({X: np.transpose(self.X_test), Y: np.matrix([self.y_test])}))
 
