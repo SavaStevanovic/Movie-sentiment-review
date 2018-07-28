@@ -25,15 +25,18 @@ class DataProcessing:
 
     def clean_text(self, series, remove_stopwords=True):
         series=series.str.replace(r"<br />", ' ')
-
-        for stopword in self.stopwords:
-            series=series.str.replace(stopword, ' ')
+        print('Removing stopwords')
+        if remove_stopwords:
+            for stopword in self.stopwords:
+                series=series.str.replace(stopword, ' ')
+        print('Removed stopwords')
         
         return(series)
 
-    def tokenize(self, writeDictionaryToCsv):
+    def tokenize(self, writeDictionaryToCsv=False):
+        print('Tokenizing')
         all_reviews = self.trainData.append(self.testData)
-        tokenizer = Tokenizer(num_words=10000)
+        tokenizer = Tokenizer(num_words=4000)
         tokenizer.fit_on_texts(all_reviews)
         tokenizer.fit_on_sequences(all_reviews)
 
@@ -42,8 +45,12 @@ class DataProcessing:
 
         self.trainData = tokenizer.sequences_to_matrix(self.trainData)
         self.testData = tokenizer.sequences_to_matrix(self.testData)
+
         if(writeDictionaryToCsv):
             self.ExportFeatureSpace(tokenizer)
+
+        tokenizer=None
+        print('Finished tokenizing')
 
     def ExportFeatureSpace(self, tokenizer):
         print("Writing dictionary to csv")
