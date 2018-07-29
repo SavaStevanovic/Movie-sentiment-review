@@ -4,6 +4,7 @@ import re
 import os
 import csv
 import operator
+import numpy as np
 
 class DataProcessing:
     stopwords = [ " a " ,  " about " ,  " above " ,  " after " ,  " again " ,  " against " ,  " all " ,  " am " ,  " an " ,  " and " ,  " any " ,  " are " ,  " as " ,  " at " ,  " be " ,  " because " ,  " been " ,  " before " ,  " being " ,  " below " ,  " between " ,  " both " ,  " but " ,  " by " ,  " could " ,  " did " ,  " do " ,  " does " ,  " doing " ,  " down " ,  " during " ,  " each " ,  " few " ,  " for " ,  " from " ,  " further " ,  " had " ,  " has " ,  " have " ,  " having " ,  " he " ,  " he'd " ,  " he'll " ,  " he's " ,  " her " ,  " here " ,  " here's " ,  " hers " ,  " herself " ,  " him " ,  " himself " ,  " his " ,  " how " ,  " how's " ,  " i " ,  " i'd " ,  " i'll " ,  " i'm " ,  " i've " ,  " if " ,  " in " ,  " into " ,  " is " ,  " it " ,  " it's " ,  " its " ,  " itself " ,  " let's " ,  " me " ,  " more " ,  " most " ,  " my " ,  " myself " ,  " nor " ,  " of " ,  " on " ,  " once " ,  " only " ,  " or " ,  " other " ,  " ought " ,
@@ -51,6 +52,10 @@ class DataProcessing:
         print('sequences_to_matrix')
         self.trainData = tokenizer.sequences_to_matrix(self.trainData)
         self.testData = tokenizer.sequences_to_matrix(self.testData)
+
+        all_reviews=np.vstack((self.trainData, self.testData))
+        self.trainData-=all_reviews.mean(axis=0)
+        self.testData-=all_reviews.mean(axis=0)
 
         if(writeDictionaryToCsv):
             self.ExportFeatureSpace(tokenizer)

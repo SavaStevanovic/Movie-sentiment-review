@@ -42,6 +42,6 @@ testLable = np.array(testLable)
 
 print(trainLable[0:10])
 print(testLable[0:10])
-learningModel = LogisticRegresionModel(trainData, testData, trainLable, testLable)
+learningModel = SVMModel(trainData, testData, trainLable, testLable)
 learningModel.model()
 #print(trainData)
