@@ -41,7 +41,7 @@ class DataProcessing:
         self.testData=self.addNgGrams(self.testData)
 
         all_reviews = self.trainData.append(self.testData)
-        tokenizer = Tokenizer(num_words=9000)
+        tokenizer = Tokenizer(num_words=10000)
         print('fitting')
         tokenizer.fit_on_texts(all_reviews)
         tokenizer.fit_on_sequences(all_reviews)

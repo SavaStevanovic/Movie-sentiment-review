@@ -19,26 +19,25 @@ class LogisticRegresionModel:
 
         return X, Y
 
-    def initialize_parameters(self, width, output):
+    def initialize_parameters(self, width, output, layer_count=2, net_width=20):
 
         # so that your "random" numbers match ours
         tf.set_random_seed(1)
 
         # START CODE HERE ### (approx. 6 lines of code)
-        W1 = tf.get_variable("W1", [100, width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b1 = tf.get_variable("b1", [100, 1], initializer=tf.zeros_initializer())
-        W2 = tf.get_variable("W2", [100, 100], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b2 = tf.get_variable("b2", [100, 1], initializer=tf.zeros_initializer())
-        W3 = tf.get_variable("W3", [output, 100], initializer=tf.contrib.layers.xavier_initializer(seed=1))
-        b3 = tf.get_variable("b3", [output, 1], initializer=tf.zeros_initializer())
+        W=[None] * layer_count
+        B=[None] * layer_count
+        
+        W[0] = tf.get_variable("W1", [net_width, width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+        B[0] = tf.get_variable("b1", [net_width, 1], initializer=tf.zeros_initializer())
+        for i in range(1,layer_count-1):
+            W[i] = tf.get_variable("W"+str(i+1), [net_width, net_width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+            B[i] = tf.get_variable("b"+str(i+1), [net_width, 1], initializer=tf.zeros_initializer())
+        W[layer_count-1] = tf.get_variable("W"+str(layer_count), [output, net_width], initializer=tf.contrib.layers.xavier_initializer(seed=1))
+        B[layer_count-1] = tf.get_variable("b"+str(layer_count), [output, 1], initializer=tf.zeros_initializer())
+            
         ### END CODE HERE ###
-
-        parameters = {"W1": W1,
-                      "b1": b1,
-                      "W2": W2,
-                      "b2": b2,
-                      "W3": W3,
-                      "b3": b3}
+        parameters = {"W":W,"b":B}
 
         return parameters
 
@@ -46,25 +45,19 @@ class LogisticRegresionModel:
 
     def forward_propagation(self, X, parameters):
         # Retrieve the parameters from the dictionary "parameters"
-        W1 = parameters['W1']
-        b1 = parameters['b1']
-        W2 = parameters['W2']
-        b2 = parameters['b2']
-        W3 = parameters['W3']
-        b3 = parameters['b3']
-
-        # START CODE HERE ### (approx. 5 lines)              # Numpy Equivalents:
-        # Z1 = np.dot(W1, X) + b1
-        Z1 = tf.add(tf.matmul(W1, X), b1)
-        A1 = tf.nn.relu(Z1)                                    # A1 = relu(Z1)
-        # Z2 = np.dot(W2, a1) + b2
-        Z2 = tf.add(tf.matmul(W2, A1), b2)
-        A2 = tf.nn.relu(Z2)                                    # A2 = relu(Z2)
-        # Z3 = np.dot(W3,Z2) + b3
-        Z3 = tf.add(tf.matmul(W3, A2), b3)
+        W=parameters['W']
+        b=parameters['b']
+        # START CODE HERE ### (approx. 5 lines)              
+        Z = tf.add(tf.matmul(W[0], X), b[0])
+        A = tf.nn.relu(Z)                                    # A1 = relu(Z1)
+        n=len(W)
+        for i in range(1,n-1):
+            Z = tf.add(tf.matmul(W[i], A), b[i])
+            A = tf.nn.relu(Z)
+        Z = tf.add(tf.matmul(W[n-1], A), b[n-1])
         ### END CODE HERE ###
 
-        return Z3
+        return Z
 
     def compute_cost(self, Z3, Y):
         # to fit the tensorflow requirement for tf.nn.softmax_cross_entropy_with_logits(...,...)
@@ -79,7 +72,7 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 25, minibatch_size = 2048, print_cost = True):
+          num_epochs = 4, minibatch_size = 32, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
