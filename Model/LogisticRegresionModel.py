@@ -79,7 +79,7 @@ class LogisticRegresionModel:
         return cost
 
     def model(self, learning_rate = 0.0001,
-          num_epochs = 7, minibatch_size = 1024, print_cost = True):
+          num_epochs = 25, minibatch_size = 2048, print_cost = True):
         tf.reset_default_graph()
         tf.set_random_seed(1)  
         seed = 3                                          # to keep consistent results
