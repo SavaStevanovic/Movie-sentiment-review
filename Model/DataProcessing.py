@@ -54,13 +54,14 @@ class DataProcessing:
         self.testData = tokenizer.sequences_to_matrix(self.testData)
 
         all_reviews=np.vstack((self.trainData, self.testData))
-        self.trainData-=all_reviews.mean(axis=0)
-        self.testData-=all_reviews.mean(axis=0)
+
+        #does not work with svm no time to change code
+        self.trainData = self.trainData / self.trainData.sum(axis=1)[:,None]
+        self.testData= self.testData / self.testData.sum(axis=1)[:,None]
 
         if(writeDictionaryToCsv):
             self.ExportFeatureSpace(tokenizer)
 
-        tokenizer=None
         print('Finished tokenizing')
 
     def ExportFeatureSpace(self, tokenizer):

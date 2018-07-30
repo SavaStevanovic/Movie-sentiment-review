@@ -13,9 +13,9 @@ class SVMModel:
         self.y_train = np.array([1 if y == 0 else -1 for y in y_train])
         self.y_test = np.array([1 if y == 0 else -1 for y in y_test])
         self.W = tf.Variable(tf.random_normal(
-            shape=[self.X_train.shape[1],1]))
+            shape=[self.X_train.shape[1], 1]))
         self.b = tf.Variable(tf.random_normal(
-            shape=[1,1]))
+            shape=[1, 1]))
 
     def create_placeholders(self):
         # START CODE HERE ### (approx. 2 lines)
@@ -26,7 +26,7 @@ class SVMModel:
         return X, Y
 
     def model(self, run_count=1000, alpha=0.02, learning_rate=0.01, batch_size=512):
-        
+
         X, Y = self.create_placeholders()
 
         model_output = tf.subtract(tf.matmul(X, self.W), self.b)
@@ -39,7 +39,8 @@ class SVMModel:
         # L2 regularization parameter, alpha
         alpha = tf.constant([alpha])
         # Margin term in loss
-        classification_term = tf.reduce_mean(tf.maximum(0., tf.subtract(1., tf.multiply(model_output, Y))))
+        classification_term = tf.reduce_mean(tf.maximum(
+            0., tf.subtract(1., tf.multiply(model_output, Y))))
         # Put terms together
         loss = tf.add(classification_term, tf.multiply(alpha, l2_norm))
 
@@ -53,10 +54,10 @@ class SVMModel:
 
         # Initialize variables
         init = tf.global_variables_initializer()
-        
+
         config = tf.ConfigProto(
-                device_count = {'GPU': 0}
-            )
+            device_count={'GPU': 0}
+        )
         with tf.Session(config=config) as sess:
             sess.run(init)
             # Training loop
@@ -93,10 +94,12 @@ class SVMModel:
                         str(train_acc_temp)
                     ))
                     print('Loss = ' + str(temp_loss))
-                if(test_acc_temp==max(test_accuracy) and test_acc_temp>0.8):
+                if(test_acc_temp == max(test_accuracy) and test_acc_temp > 0.8):
                     dirname = os.path.dirname(__file__)
-                    np.savetxt(os.path.join(dirname,'W.out'), sess.run(self.W))
-                    np.savetxt(os.path.join(dirname,'b.out'), sess.run(self.b))
+                    np.savetxt(os.path.join(dirname, 'W.out'),
+                               sess.run(self.W))
+                    np.savetxt(os.path.join(dirname, 'b.out'),
+                               sess.run(self.b))
 
         # Extract coefficients
         # W_final = sess.run(self.W)

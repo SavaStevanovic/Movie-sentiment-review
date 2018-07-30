@@ -11,11 +11,11 @@ from LogisticRegresionModel import LogisticRegresionModel
 from DataProcessing import DataProcessing
 
 dirname = os.path.dirname(__file__)
-dirname=os.path.abspath(os.path.join(dirname, os.pardir))
+dirname = os.path.abspath(os.path.join(dirname, os.pardir))
 trainData = pd.read_csv(os.path.join(dirname,
-    'Data Parsing\\labeledData.csv'))
+                                     'Data Parsing\\labeledData.csv'))
 testData = pd.read_csv(os.path.join(dirname,
-    'Data Parsing\\TestLabeledData.csv'))
+                                    'Data Parsing\\TestLabeledData.csv'))
 
 np.random.seed(5)
 
@@ -42,6 +42,7 @@ testLable = np.array(testLable)
 
 print(trainLable[0:10])
 print(testLable[0:10])
-learningModel = LogisticRegresionModel(trainData, testData, trainLable, testLable)
+learningModel = LogisticRegresionModel(
+    trainData, testData, trainLable, testLable)
 learningModel.model()
-#print(trainData)
+# print(trainData)
