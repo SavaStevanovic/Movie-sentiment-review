@@ -19,7 +19,7 @@ class LogisticRegresionModel:
 
         return X, Y
 
-    def initialize_parameters(self, width, output, layer_count=2, net_width=20):
+    def initialize_parameters(self, width, output, layer_count=2, net_width=30):
 
         # so that your "random" numbers match ours
         tf.set_random_seed(1)
